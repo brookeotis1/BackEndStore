@@ -5,18 +5,16 @@ const { Tag, Product, ProductTag } = require('../../models');
 // find all tags
 // be sure to include its associated Product data
   router.get('/', async (req, res) => {
-    try {
-      const tagData = await Tag.findAll({
+    Tag.findAll({
         include: [Category, { model: Product, through: ProductTag }],
-    }),
-  }
-  .then((products) => res.json(products))
+    })
+  
+  .then((category) => res.json(category))
      .catch((err) => {
       console.log(err);
       res.status(400).json(err);
     });
-  });
-
+  })
 
 
   // find a single tag by its `id`
@@ -37,13 +35,14 @@ const { Tag, Product, ProductTag } = require('../../models');
 
 // create a new tag
   router.post('/', (req, res) => {
-    try {
-      const productData = await Product.create(req.body);
-      res.status(200).json(productData);
-      } catch (err) {
-        res.status(400).json(err);
-      }
-    });
+    Product.create(req.body)
+     .then ((category) => res.status(200).json(category))
+     .catch((err) => {
+      console.log(err);
+      res.status(400).json(err);
+     
+    }); 
+  }); 
   
 
 // update a tag's name by its `id` value   ??
@@ -54,21 +53,17 @@ const { Tag, Product, ProductTag } = require('../../models');
 
 // delete on tag by its `id` value
 router.delete('/:id', async (req, res) => {
-  try {
-    const tagData = await Tag.destroy({
+   Tag.destroy({
       where: {
         id: req.params.id
       }
-    });
-    if (!tagData) {
-      res.status(404).json({ message: 'No tag found with this id' });
-      return;
-    }
-    res.status(200).json(tagData);
-  
-  } catch (err) {
-    res.status(500).json(err);
-  }
+    })
+    .then ((category) => res.status(200).json(category))
+    .catch((err) => {
+      console.log(err);
+      res.status(400).json(err);
+  });
 });
+
 
 module.exports = router;
