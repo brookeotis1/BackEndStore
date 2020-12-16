@@ -5,34 +5,35 @@ const { Category, Product } = require('../../models');
 // find all categories
   // be sure to include its associated Products
   
-router.get('/', async (req, res) => {
+router.get('/', (req, res) => {
   
   Category.findAll({
-      include: [Product]
-    })
+    include: [Product]
+  })
 
   .then((category) => res.json(category))
-     .catch((err) => {
-      console.log(err);
-      res.status(400).json(err);
+  .catch((err) => {
+    console.log(err);
+    res.status(400).json(err);
     });
-  });
+});
   
 
 
   // find one category by its `id` value
   // be sure to include its associated Products
-  // router.get('/:id', async (req, res) => {
-  //   const categoryData = await Category.findOne ({
+  router.get('/:id', (req, res) => {
+     Category.findOne ({
+  where: {id:req.params.id},
+  include: [Product]
+     })
   
-  //   })
-  
-  //   .then((category) => res.json(category))
-  //    .catch((err) => {
-  //     console.log(err);
-  //     res.status(400).json(err);
-  //   });
-  // });
+     .then((category) => res.json(category))
+     .catch((err) => {
+      console.log(err);
+      res.status(400).json(err);
+    });
+  });
   
 
 // create a new category
@@ -50,10 +51,16 @@ router.post('/', (req, res) => {
 
 
 
-// update a category by its `id` value - same as product? 
-//router.put('/:id', (req, res) => {
-  
-//});
+// update a category by its `id` value  
+router.put('/:id', (req, res) => {
+  Category.update(req.body, {where:{id:req.params.id}})
+  .then ((category) => res.status(200).json(category))
+  .catch((err) => {
+    console.log(err);
+    res.status(400).json(err);
+   
+  });
+});
 
 
 // delete a category by its `id` value
